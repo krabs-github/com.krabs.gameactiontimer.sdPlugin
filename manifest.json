@@ -1,0 +1,48 @@
+{
+    "Actions": [
+        {
+            "Icon": "resources/images/actionIcon",
+            "Name": "Game Action Timer",
+            "States": [
+                {
+                  "Image": "resources/images/actionDefaultImage_Ready",
+                  "TitleAlignment": "bottom",
+                  "FontSize": "12"
+                },
+                {
+                  "Image": "resources/images/actionDefaultImage_NotReady",
+                  "TitleAlignment": "bottom",
+                  "FontSize": "12"
+                }
+              ],
+            "PropertyInspectorPath": "gameactiontimer_pi.html",
+            "SupportedInMultiActions": false,
+            "Tooltip": "Displays the cooldown for game actions & abilities",
+            "UUID": "com.krabs.gameactiontimer.action",
+            "ApplicationsToMonitor": {
+                "windows": [
+                    "GameActionTimer.exe"
+                ]
+            }
+        }
+    ],
+    "ApplicationsToMonitor": {
+        "windows": [
+            "GameActionTimer.exe"
+        ]
+    },
+    "SDKVersion": 2,
+    "Author": "Krabs",
+    "Category": "Krabs - Streamdeck Labs",
+    "CategoryIcon": "resources/images/categoryIcon",
+    "CodePath": "gameactiontimer.html",
+    "Description": "Displays the cooldown for game actions & abilities.",
+    "Name": "Game Action Timer",
+    "Icon": "resources/images/pluginIcon",
+    "URL": "https://www.krabs.me/streamdeck-plugins",
+    "Version": "1.0.1",
+    "OS": [
+        { "Platform": "windows", "MinimumVersion": "10" }
+    ],
+    "Software": { "MinimumVersion": "5.0" }
+}
