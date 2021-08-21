@@ -11,10 +11,10 @@
             let actionInfo = {};
             let DestinationEnum = Object.freeze({ HARDWARE_AND_SOFTWARE: 0, HARDWARE_ONLY: 1, SOFTWARE_ONLY: 2 });
             var settingsCache = {};
-            var vText = null;
-            var vRun = null;
-            var vAppIsRunning = null;
-            var context = null;
+            //var vText = null;
+            //var vRun = null;
+            //var vAppIsRunning = null;
+            //var vContextCache = {};
             var vAvatarBase64 = null;
             var base64Img = null;
 // Beginning of let KrabsGameActionTimer definition
@@ -26,41 +26,86 @@
                 onKeyUp: function (context, settings, coordinates, userDesiredState) {
                     /* Code here will run when the key is released https://developer.elgato.com/documentation/stream-deck/sdk/events-received/#keyup */
                 },
-                fKrabs_Timer: function (context) {
+                fKrabs_Timer: function (context, settings, vStop) {
+                    var payload = settingsCache[context];
+                    if (payload != null && payload.hasOwnProperty('vKrabs_ActionName')) {
+                      var vActionName = payload['vKrabs_ActionName'];
+                    }
+                    var vFile = "resources/timers/" + vActionName + ".timer";
+                    var vText = null;
+                    var vTitle = "";
                     function getData() {
-                    //console.warn("in function: ", vAppIsRunning)
-                    function fetchLocalResource(url){
-                      const req = new XMLHttpRequest();
-                      req.onload = function() {
-                          vText = req.responseText;
-                          //console.warn("result: ", vText)
-                          vTitle = vText.replace(/\n*$/, "");
-                          //console.log("set title: ", vTitle)
-                          //console.log("set title context: ", context)
-                          KrabsGameActionTimer.SetTitle(context, vTitle);
+                      //console.warn("in function: ", vAppIsRunning)
+                      function fetchLocalResource(url){
+                        const req = new XMLHttpRequest();
+                        req.onload = function() {
+                            vText = req.responseText;
+                            //console.warn("result: ", vText)
+                            vTitle = vText.replace(/\n*$/, "");
+                            vTitle = vText.replace(/\s/g, '');
+                            //console.log("set title: ", vTitle)
+                            //console.log("set title context: ", context)
+                            if (vTitle == "Ready") {
+                              var inState = 0
+                              setState(context, inState);
+                              KrabsGameActionTimer.SetTitle(context, vTitle);
+                            } else {
+                              var inState = 1
+                              setState(context, inState);
+                              KrabsGameActionTimer.SetTitle(context, vTitle);
+                            }
+                        };
+                        req.open('GET', url);
+                        req.send();
                       };
-                      req.open('GET', url);
-                      req.send();
-                    };
-                    var url = "resources/timers/potion1.timer"
-                    fetchLocalResource(url);
-                }
 
-                if (vAppIsRunning == "1") {
-                  var inState = 1
-                  setState(context, inState);
-                  vRun = setInterval(getData, 500);
-                  //console.log("int ID1: ", vRun)
-                } else if (vAppIsRunning == "0") {
-                  //console.log("int ID2: ", vRun)
-                  clearInterval(vRun);
-                  vTitle = "Ready"
-                  var inState = 0
-                  setState(context, inState);
-                  KrabsGameActionTimer.SetTitle(context, vTitle);
-                  var vSoundFX1 = new Audio('resources/sounds/sword.mp3');
-                  vSoundFX1.play();
-                }
+                      try {
+                      var url = "resources/timers/" + vActionName + ".timer"
+                      fetchLocalResource(url);
+                      console.log("try")
+                      } catch (error) {
+                      console.error(error);
+                      };
+
+                    /*function doesFileExist(url) {
+                      var xhr = new XMLHttpRequest();
+                      xhr.open('GET', url);
+                      xhr.send();
+                      if (xhr.status == "404") {
+                          return false;
+                      } else {
+                          return true;
+                      }
+                    };
+
+                    var vExists = doesFileExist("vFile");
+                    console.log(vExists)*/
+
+                    /*var vRun = null;
+                    if (vExists == true) {
+                      var inState = 1
+                      setState(context, inState);
+                      vRun = setInterval(getData, 500);
+                      //console.log("int ID1: ", vRun)
+                    } else if (vExists == false) {
+                      //console.log("int ID2: ", vRun)
+                      //clearInterval(vRun);
+                      vTitle = "Ready"
+                      var inState = 0
+                      setState(context, inState);
+                      KrabsGameActionTimer.SetTitle(context, vTitle);
+                      var vSoundFX1 = new Audio('resources/sounds/sword.mp3');
+                      vSoundFX1.play();
+                    }*/
+                  }
+                  try {
+                    if (vStop == "true") {
+                    clearInterval(vRun);
+                    }
+                  } catch (error) {
+                  console.error("ignore: ", error);
+                  };
+                  vRun = setInterval(getData, 900);
               },
 
                 onWillAppear: function (context, settings, coordinates) {
@@ -69,6 +114,7 @@
                     */
                     console.log("onWillAppear context: ", context, " settings: ", settings);
                     settingsCache[context] = settings;
+                    KrabsGameActionTimer.fKrabs_Timer(context, settings);
                     //this.fKrabs_GetData(context);
                 },
                 onWillDisappear: function (context, settings, coordinates) {
@@ -91,8 +137,13 @@
 
                     websocket.send(JSON.stringify(json));
                     settingsCache[context] = settings;
+                    vContextCache = context;
                     console.log("New Settings", settings);
                     console.log("New JSON", JSON.stringify(json));
+                    vStop = "true"
+                    KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop).then();
+                    vStop = "false"
+                    KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop);
                 },
                 updateSettings: function (context, vDiscordURL, vMemberName, vRefreshInterval, imageUrl) {
                       let vPayload = {};
@@ -211,14 +262,16 @@
                 websocket.onopen = function () {
                     registerPlugin(pluginUUID);
                 };
+                var context;
                 websocket.onmessage = function (evt) {
                     let jsonObj = JSON.parse(evt.data);
                     console.log("onmessage json: ", jsonObj);
                     let event = jsonObj["event"];
                     let action = jsonObj["action"];
                     if (event !== "applicationDidLaunch" && event !== "applicationDidTerminate") {
-                    context = jsonObj["context"];
-                    };
+                      context = jsonObj["context"];
+                    console.log("insideonmessage: ", context)
+                    }
                     var actionInfo = jsonObj["inActionInfo"];
                     var jsonPayload = jsonObj['payload'] || {};
                     if (event == "keyDown") {
@@ -245,9 +298,9 @@
                         KrabsGameActionTimer.onWillDisappear(context, settings, coordinates);
                     } else if (event == "sendToPlugin") {
                         console.log("sendToPlugin received payload: ", jsonPayload);
-                        /*if (jsonPayload != null && jsonPayload.hasOwnProperty('vKrabs_DiscordURL') && jsonPayload.hasOwnProperty('vKrabs_Interval') && jsonPayload.hasOwnProperty('vKrabs_DiscordMemberName')) {*/
+                        if (jsonPayload != null && jsonPayload.hasOwnProperty('vKrabs_ActionName')) {
                         KrabsGameActionTimer.SetSettings(context, jsonPayload);
-                      //}
+                        }
                     } else if (event == "didReceiveSettings") {
                         console.log("didReceiveSettings received payload: ", jsonPayload);
                         if (jsonPayload != null && jsonPayload['settings'] != null) {
@@ -260,12 +313,13 @@
                     } else if (event == "applicationDidLaunch") {
                         if (jsonPayload != null) {
                           vAppIsRunning = "1";
-                          KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
+                          //KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
+                          //console.warn("appdid: ", context)
                         }
                     } else if (event == "applicationDidTerminate") {
                         if (jsonPayload != null) {
                           vAppIsRunning = "0";
-                          KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
+                          //KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
                         }
                     }
                   };

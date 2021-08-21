@@ -18,12 +18,7 @@
             "PropertyInspectorPath": "gameactiontimer_pi.html",
             "SupportedInMultiActions": false,
             "Tooltip": "Displays the cooldown for game actions & abilities",
-            "UUID": "com.krabs.gameactiontimer.action",
-            "ApplicationsToMonitor": {
-                "windows": [
-                    "GameActionTimer.exe"
-                ]
-            }
+            "UUID": "com.krabs.gameactiontimer.action"
         }
     ],
     "ApplicationsToMonitor": {
