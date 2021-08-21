@@ -11,10 +11,6 @@
             let actionInfo = {};
             let DestinationEnum = Object.freeze({ HARDWARE_AND_SOFTWARE: 0, HARDWARE_ONLY: 1, SOFTWARE_ONLY: 2 });
             var settingsCache = {};
-            //var vText = null;
-            //var vRun = null;
-            //var vAppIsRunning = null;
-            //var vContextCache = {};
             var vAvatarBase64 = null;
             var base64Img = null;
 // Beginning of let KrabsGameActionTimer definition
@@ -35,16 +31,12 @@
                     var vText = null;
                     var vTitle = "";
                     function getData() {
-                      //console.warn("in function: ", vAppIsRunning)
                       function fetchLocalResource(url){
                         const req = new XMLHttpRequest();
                         req.onload = function() {
                             vText = req.responseText;
-                            //console.warn("result: ", vText)
                             vTitle = vText.replace(/\n*$/, "");
                             vTitle = vText.replace(/\s/g, '');
-                            //console.log("set title: ", vTitle)
-                            //console.log("set title context: ", context)
                             if (vTitle == "Ready") {
                               var inState = 0
                               setState(context, inState);
@@ -62,41 +54,12 @@
                       try {
                       var url = "resources/timers/" + vActionName + ".timer"
                       fetchLocalResource(url);
-                      console.log("try")
                       } catch (error) {
                       console.error(error);
                       };
 
-                    /*function doesFileExist(url) {
-                      var xhr = new XMLHttpRequest();
-                      xhr.open('GET', url);
-                      xhr.send();
-                      if (xhr.status == "404") {
-                          return false;
-                      } else {
-                          return true;
-                      }
-                    };
-
-                    var vExists = doesFileExist("vFile");
-                    console.log(vExists)*/
-
-                    /*var vRun = null;
-                    if (vExists == true) {
-                      var inState = 1
-                      setState(context, inState);
-                      vRun = setInterval(getData, 500);
-                      //console.log("int ID1: ", vRun)
-                    } else if (vExists == false) {
-                      //console.log("int ID2: ", vRun)
-                      //clearInterval(vRun);
-                      vTitle = "Ready"
-                      var inState = 0
-                      setState(context, inState);
-                      KrabsGameActionTimer.SetTitle(context, vTitle);
-                      var vSoundFX1 = new Audio('resources/sounds/sword.mp3');
-                      vSoundFX1.play();
-                    }*/
+                      //var vSoundFX1 = new Audio('resources/sounds/sword.mp3');
+                      //vSoundFX1.play();
                   }
                   try {
                     if (vStop == "true") {
@@ -145,26 +108,6 @@
                     KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop).then();
                     vStop = "false"
                     KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop);
-                },
-                updateSettings: function (context, vDiscordURL, vMemberName, vRefreshInterval, imageUrl) {
-                      let vPayload = {};
-                      vPayload.vKrabs_DiscordURL = vDiscordURL;
-                      vPayload.vKrabs_DiscordMemberName = vMemberName;
-                      vPayload.vKrabs_Interval = vRefreshInterval;
-                      vPayload.vKrabs_DiscordMemberAvatar = imageUrl;
-                      const json = {
-                          "event": "setSettings",
-                          "context": context,
-                          "payload": vPayload
-                      };
-                      websocket.send(JSON.stringify(json));
-                      /*console.warn("in Update settings:")
-                      console.warn("IUS Member Name: ", vMemberName)
-                      console.warn("IUS Avatar URL: ", imageUrl)
-                      console.warn("IUS Refresh Interval: ", vRefreshInterval)
-                      console.warn("IUS Refresh Discord URL: ", vDiscordURL)
-                      console.warn("IUS Settings Cache: ", settingsCache[context])
-                      console.warn("--------------------------------------------")*/
                 },
                 AddToSettings: function (context, newSettings) {
                   settingsCache[context]
@@ -271,7 +214,6 @@
                     let action = jsonObj["action"];
                     if (event !== "applicationDidLaunch" && event !== "applicationDidTerminate") {
                       context = jsonObj["context"];
-                    console.log("insideonmessage: ", context)
                     }
                     var actionInfo = jsonObj["inActionInfo"];
                     var jsonPayload = jsonObj['payload'] || {};
@@ -314,13 +256,10 @@
                     } else if (event == "applicationDidLaunch") {
                         if (jsonPayload != null) {
                           vAppIsRunning = "1";
-                          //KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
-                          //console.warn("appdid: ", context)
                         }
                     } else if (event == "applicationDidTerminate") {
                         if (jsonPayload != null) {
                           vAppIsRunning = "0";
-                          //KrabsGameActionTimer.fKrabs_Timer(context, vAppIsRunning);
                         }
                     }
                   };
