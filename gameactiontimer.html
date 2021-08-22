@@ -45,6 +45,10 @@
                               var inState = 1
                               setState(context, inState);
                               KrabsGameActionTimer.SetTitle(context, vTitle);
+                              if (vTitle == "1") {
+                                var vSoundFX1 = new Audio('resources/sounds/twinkle.mp3');
+                                vSoundFX1.play();
+                              }
                             }
                         };
                         req.open('GET', url);
