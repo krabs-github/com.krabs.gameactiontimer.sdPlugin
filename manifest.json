@@ -21,11 +21,7 @@
             "UUID": "com.krabs.gameactiontimer.action"
         }
     ],
-    "ApplicationsToMonitor": {
-        "windows": [
-            "GameActionTimer.exe"
-        ]
-    },
+
     "SDKVersion": 2,
     "Author": "Krabs",
     "Category": "Krabs - Streamdeck Labs",

@@ -27,11 +27,29 @@
                     if (payload != null && payload.hasOwnProperty('vKrabs_ActionName')) {
                       var vActionName = payload['vKrabs_ActionName'];
                     }
+                    if (payload != null && payload.hasOwnProperty('vKrabs_DisplayName')) {
+                      var vDisplayName = payload['vKrabs_DisplayName'];
+                    }
+                    if (payload != null && payload.hasOwnProperty('vKrabs_DisplayText')) {
+                      var vDisplayText = payload['vKrabs_DisplayText'];
+                    }
                     var vFile = "resources/timers/" + vActionName + ".timer";
                     var vText = null;
                     var vTitle = "";
+                    var vDisplaySelected = "";
+
                     function getData() {
-                      function fetchLocalResource(url){
+                      var payload = settingsCache[context];
+                      if (payload != null && payload.hasOwnProperty('vKrabs_ActionName')) {
+                        var vActionName = payload['vKrabs_ActionName'];
+                      }
+                      if (payload != null && payload.hasOwnProperty('vKrabs_DisplayName')) {
+                        var vDisplayName = payload['vKrabs_DisplayName'];
+                      }
+                      if (payload != null && payload.hasOwnProperty('vKrabs_DisplayText')) {
+                        var vDisplayText = payload['vKrabs_DisplayText'];
+                      }
+                      function fetchLocalResource(url) {
                         const req = new XMLHttpRequest();
                         req.onload = function() {
                             vText = req.responseText;
@@ -40,11 +58,21 @@
                             if (vTitle == "Ready") {
                               var inState = 0
                               setState(context, inState);
-                              KrabsGameActionTimer.SetTitle(context, vTitle);
+                              if (vDisplayText == "ready") {
+                                  vDisplaySelected = "Ready"
+                                  KrabsGameActionTimer.SetTitle(context, vDisplaySelected);
+                              } else if (vDisplayText == "display") {
+                                  vDisplaySelected = vDisplayName
+                                  KrabsGameActionTimer.SetTitle(context, vDisplaySelected);
+                              } else if (vDisplayText == "none") {
+                                  vDisplaySelected = ""
+                                  KrabsGameActionTimer.SetTitle(context, vDisplaySelected);
+                              }
                             } else {
                               var inState = 1
                               setState(context, inState);
-                              KrabsGameActionTimer.SetTitle(context, vTitle);
+                              vDisplaySelected = vTitle
+                              KrabsGameActionTimer.SetTitle(context, vDisplaySelected);
                               if (vTitle == "1") {
                                 var vSoundFX1 = new Audio('resources/sounds/twinkle.mp3');
                                 vSoundFX1.play();
@@ -61,19 +89,23 @@
                       } catch (error) {
                       console.error(error);
                       };
-
-                      //var vSoundFX1 = new Audio('resources/sounds/sword.mp3');
-                      //vSoundFX1.play();
+                      //console.log(vActionName, vDisplaySelected)
                   }
-                  try {
-                    if (vStop == "true") {
-                    clearInterval(vRun);
-                    }
-                  } catch (error) {
-                  console.error("ignore: ", error);
-                  };
                   getData();
-                  vRun = setInterval(getData, 900);
+                  setTimeout(function run() {
+                    getData();
+                    var payload = settingsCache[context];
+                    if (payload != null && payload.hasOwnProperty('vKrabs_ActionName')) {
+                      var vActionName = payload['vKrabs_ActionName'];
+                    }
+                    if (payload != null && payload.hasOwnProperty('vKrabs_DisplayName')) {
+                      var vDisplayName = payload['vKrabs_DisplayName'];
+                    }
+                    if (payload != null && payload.hasOwnProperty('vKrabs_DisplayText')) {
+                      var vDisplayText = payload['vKrabs_DisplayText'];
+                    }
+                    setTimeout(run, 900);
+                  }, 900);
               },
 
                 onWillAppear: function (context, settings, coordinates) {
@@ -83,13 +115,12 @@
                     console.log("onWillAppear context: ", context, " settings: ", settings);
                     settingsCache[context] = settings;
                     KrabsGameActionTimer.fKrabs_Timer(context, settings);
-                    //this.fKrabs_GetData(context);
                 },
                 onWillDisappear: function (context, settings, coordinates) {
                     console.log("onWillDisappear context: ", context, " settings: ", settings);
                 },
-                SetTitle: function (context, vTitle) {
-                    let json = { event: "setTitle", context: context, payload: { title: ""+ vTitle, target: DestinationEnum.HARDWARE_AND_SOFTWARE } };
+                SetTitle: function (context, vDisplaySelected) {
+                    let json = { event: "setTitle", context: context, payload: { title: ""+ vDisplaySelected, target: DestinationEnum.HARDWARE_AND_SOFTWARE } };
                     websocket.send(JSON.stringify(json));
                 },
                 getSettings: function (context, payload) {
@@ -108,10 +139,6 @@
                     vContextCache = context;
                     console.log("New Settings", settings);
                     console.log("New JSON", JSON.stringify(json));
-                    vStop = "true"
-                    KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop).then();
-                    vStop = "false"
-                    KrabsGameActionTimer.fKrabs_Timer(context, settings, vStop);
                 },
                 AddToSettings: function (context, newSettings) {
                   settingsCache[context]

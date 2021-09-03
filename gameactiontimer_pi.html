@@ -16,10 +16,21 @@
     <div class="sdpi-heading"></div>
     <div class="sdpi-item" id="required_text">
         <div class="sdpi-item-label">Action Name</div>
-        <input class="sdProperty" type="text" id="vKrabs_ActionName" value="" required oninput="setSettings()">
+        <input class="sdProperty" type="text" id="vKrabs_ActionName" size="33" placeholder="No spaces/special Characters (except _'s)" value="" required oninput="setSettings()">
     </div>
-
+    <div class="sdpi-item" id="required_text">
+        <div class="sdpi-item-label">Display Name</div>
+        <input class="sdProperty" type="text" id="vKrabs_DisplayName" size="33" placeholder="Name to Display on Key if selected below" value="" oninput="setSettings()">
+    </div>
     <div class="sdpi-heading"></div>
+    <div class="sdpi-item" id="required_text">
+        <div class="sdpi-item-label">On Action Ready</div>
+        <select class="sdProperty" id="vKrabs_DisplayText" oninput="setSettings()">
+        	<option value="ready" selected>Show Ready Text</option>
+        	<option value="display">Show Display Name</option>
+        	<option value="none">Show No Text</option>
+        </select>
+    </div>
 
       <div class="sdpi-heading"></div>
         <details class="message">
