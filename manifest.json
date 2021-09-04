@@ -12,7 +12,7 @@
                 {
                   "Image": "resources/images/actionDefaultImage_NotReady",
                   "TitleAlignment": "bottom",
-                  "FontSize": "12"
+                  "FontSize": "10"
                 }
               ],
             "PropertyInspectorPath": "gameactiontimer_pi.html",
