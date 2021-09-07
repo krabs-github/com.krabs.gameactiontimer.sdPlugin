@@ -1,6 +1,7 @@
 com.krabs.gameactiontimer.sdPlugin
 # Game Action Timer
-![Image](https://i.postimg.cc/85T1ms22/Game-Action-Timer-Application-black.png) ![Image](https://i.postimg.cc/m2KB6dxN/Game-Action-Timer.gif)
+![Image](https://i.postimg.cc/85T1ms22/Game-Action-Timer-Application-black.png)
+![Image](https://i.postimg.cc/m2KB6dxN/Game-Action-Timer.gif)
 
 Category:
 Gaming
