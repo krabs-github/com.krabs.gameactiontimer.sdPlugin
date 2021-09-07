@@ -22,10 +22,6 @@ Go to: https://www.krabs.me/streamdeck-plugins/game-action-timer to download the
 Example usage in a keyboard macro:
 %APPDATA%\StreamDeckLabs\GameActionTimer\GameActionTimer.exe "<action name from Stream Deck button>" "<cooldown time in seconds>"
 
-What's New:
-Version 1.0.1
-- Initial Release.
-
 Helpful Links:
 Setup & Usage Instructions:
 https://www.krabs.me/streamdeck-plugins/game-action-timer
