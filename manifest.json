@@ -21,7 +21,7 @@
             "UUID": "com.krabs.gameactiontimer.action"
         }
     ],
-
+    
     "SDKVersion": 2,
     "Author": "Krabs",
     "Category": "Krabs - Stream Deck Labs",
@@ -31,7 +31,7 @@
     "Name": "Game Action Timer",
     "Icon": "resources/images/pluginIcon",
     "URL": "https://www.krabs.me/streamdeck-plugins",
-    "Version": "1.0.1",
+    "Version": "1.0.2",
     "OS": [
         { "Platform": "windows", "MinimumVersion": "10" }
     ],
